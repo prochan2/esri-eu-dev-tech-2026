@@ -1,0 +1,54 @@
+/* Esri summit palette (from the 2026 speaker template) + a touch of CETIN. */
+:root {
+  --esri-navy: #2a2d62;
+  --esri-indigo: #2a2d8c;
+  --esri-teal: #47a3a7;
+  --esri-blue: #007ac2;
+  --esri-cyan: #00b9f2;
+  --esri-sky: #90e0fc;
+  --esri-ice: #c3e3f7;
+  --esri-orange: #f89927;
+  --esri-amber: #f8a40d;
+  --esri-green: #35ac46;
+  --esri-lime: #aad04b;
+  --esri-purple: #8e499b;
+  --key-coral: #ff7a5c;
+  --key-yellow: #ffdf78;
+  --key-mint: #9ef5e6;
+
+  --cetin-blue: #300091;
+  --cetin-red: #f12e49;
+  --cetin-lilac: #a7a4e0;
+
+  --ink: #ffffff;
+  --ink-2: rgba(255, 255, 255, 0.78);
+  --ink-3: rgba(255, 255, 255, 0.5);
+  --line: rgba(144, 224, 252, 0.22);
+  --panel: rgba(16, 18, 52, 0.72);
+  --panel-2: rgba(42, 45, 140, 0.45);
+
+  --good: #6ee39a;
+  --bad: #ff6b7d;
+
+  --sans: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  --mono: 'Cascadia Code', 'Cascadia Mono', Consolas, 'SFMono-Regular', Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #0d0e26;
+  color: var(--ink);
+  font-family: var(--sans);
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}

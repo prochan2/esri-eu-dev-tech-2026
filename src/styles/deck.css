@@ -1,0 +1,136 @@
+/* ---------- stage & canvas ---------- */
+.stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform-origin: 0 0;
+  background: #14163a;
+  contain: strict;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1200px 900px at 85% 110%, rgba(71, 163, 167, 0.42), transparent 60%),
+    radial-gradient(900px 700px at 0% 0%, rgba(42, 45, 140, 0.75), transparent 70%),
+    linear-gradient(135deg, #1a1c4a 0%, #2a2d62 55%, #23306e 100%);
+}
+
+.world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+
+.terrain {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+.terrain path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+.terrain .minor {
+  stroke: rgba(144, 224, 252, 0.07);
+  stroke-width: 1;
+}
+.terrain .major {
+  stroke: rgba(144, 224, 252, 0.14);
+  stroke-width: 1.4;
+}
+
+.frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  padding: 110px 130px;
+  display: flex;
+  flex-direction: column;
+}
+
+.blackout {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+  z-index: 10;
+}
+.stage.is-black .blackout {
+  opacity: 1;
+}
+
+/* ---------- builds ---------- */
+[data-in],
+[data-out],
+[data-only] {
+  transition:
+    opacity 0.6s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.6s ease,
+    max-height 0.7s ease,
+    margin 0.7s ease,
+    padding 0.7s ease;
+}
+.b-pre {
+  opacity: 0;
+  transform: translateY(26px);
+}
+.b-off {
+  opacity: 0;
+}
+[data-anim='zoom'].b-pre {
+  transform: scale(0.82);
+}
+[data-anim='left'].b-pre {
+  transform: translateX(-70px);
+}
+[data-anim='right'].b-pre {
+  transform: translateX(70px);
+}
+[data-anim='fade'].b-pre {
+  transform: none;
+}
+[data-anim='drop'].b-pre {
+  transform: translateY(-60px);
+}
+[data-anim='fade'].b-off,
+[data-anim='zoom'].b-off {
+  transform: none;
+}
+/* removed from flow when not shown */
+[data-collapse].b-pre,
+[data-collapse].b-off {
+  max-height: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden;
+}
+.b-off[data-gone] {
+  display: none;
+}
+
+.stage.instant *,
+.print * {
+  transition: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
+
+.view-preview .stage {
+  cursor: pointer;
+}

@@ -1,0 +1,31 @@
+@page {
+  size: 1920px 1080px;
+  margin: 0;
+}
+html,
+body.view-print {
+  overflow: visible;
+  height: auto;
+  background: #14163a;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.page.stage {
+  position: relative;
+  break-after: page;
+  page-break-after: always;
+  transform: none;
+}
+.page.stage:last-child {
+  break-after: auto;
+}
+@media screen {
+  body.view-print {
+    overflow: auto;
+    background: #333;
+  }
+  .page.stage {
+    margin: 0 auto 24px;
+    zoom: 0.5;
+  }
+}

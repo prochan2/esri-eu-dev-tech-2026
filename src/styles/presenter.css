@@ -1,0 +1,226 @@
+body.view-presenter {
+  background: #0b0c20;
+  overflow: hidden;
+}
+.p-root {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  padding: 12px 16px 14px;
+}
+.p-bar {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.p-elapsed {
+  font: 700 56px/1 var(--mono);
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+.p-elapsed.paused {
+  color: var(--ink-3);
+}
+.p-elapsed.over {
+  color: var(--bad);
+}
+.p-sub {
+  color: var(--ink-3);
+  font-size: 14px;
+  margin-top: 4px;
+}
+.p-pace {
+  font: 700 20px var(--sans);
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  min-width: 150px;
+  text-align: center;
+}
+.p-pace.ok {
+  color: var(--good);
+}
+.p-pace.early {
+  color: var(--esri-sky);
+}
+.p-pace.warn {
+  color: var(--esri-amber);
+}
+.p-pace.late {
+  color: #fff;
+  background: #b3243a;
+}
+.p-where {
+  flex: 1;
+  min-width: 0;
+}
+.p-section {
+  color: var(--esri-sky);
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.p-stepno {
+  font-size: 22px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.p-buttons {
+  display: flex;
+  gap: 8px;
+}
+.p-buttons button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.p-buttons button:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.p-buttons button.on {
+  background: var(--esri-blue);
+}
+
+.p-main {
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  gap: 16px;
+  min-height: 0;
+}
+.p-current,
+.p-side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 6px;
+}
+.p-label {
+  color: var(--ink-3);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.p-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  max-height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.p-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.p-notes {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin: 0;
+  padding: 10px 14px 10px 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 23px;
+  line-height: 1.38;
+}
+.p-notes li {
+  margin: 0 0 8px;
+}
+.p-notes li::marker {
+  color: var(--cetin-red);
+}
+.p-notes .muted {
+  color: var(--ink-3);
+  list-style: none;
+}
+
+.p-map {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  padding-top: 8px;
+}
+.p-sec {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0.7;
+}
+.p-sec.active {
+  opacity: 1;
+}
+.p-sec-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--esri-sky);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.p-sec-head span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.p-sec-t {
+  color: var(--ink-3);
+}
+.p-chips {
+  display: flex;
+  gap: 2px;
+}
+.p-chip {
+  min-width: 0;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  cursor: pointer;
+  overflow: hidden;
+}
+.p-chip:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.p-chip.done {
+  background: rgba(0, 185, 242, 0.35);
+}
+.p-chip.active {
+  background: var(--cetin-red);
+  font-weight: 700;
+}
+.p-now,
+.p-plan {
+  position: absolute;
+  top: 0;
+  bottom: -6px;
+  width: 0;
+  pointer-events: none;
+  transition: left 0.3s;
+}
+.p-plan {
+  border-left: 2px dashed var(--esri-amber);
+}
+.p-plan::after {
+  content: 'clock';
+  position: absolute;
+  bottom: -14px;
+  left: -14px;
+  font-size: 10px;
+  color: var(--esri-amber);
+}
+body.view-presenter.is-black .p-current .p-frame {
+  box-shadow: 0 0 0 3px var(--cetin-red);
+}
