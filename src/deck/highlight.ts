@@ -67,7 +67,4 @@ export async function highlightAll(root: ParentNode) {
     });
     pre.replaceWith(out);
   }
-  // re-apply build state so lines with data-in pick up their classes
-  const { applyLocal } = await import('../engine/deck');
-  root.querySelectorAll<HTMLElement>('.frame').forEach((f) => applyLocal(f, Number(f.dataset.local ?? 0)));
 }

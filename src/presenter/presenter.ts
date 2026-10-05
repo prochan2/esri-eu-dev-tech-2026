@@ -64,10 +64,10 @@ export function presenter() {
     <footer class="p-map" id="map">
       ${sections
         .map(
-          (s) => `<div class="p-sec" data-sec="${s.section.id}" style="flex:${s.secs}">
+          (s) => `<div class="p-sec" data-sec="${s.section.id}" style="flex:${Math.max(s.secs, 15)}">
             <div class="p-sec-head"><span>${esc(s.section.title)}</span><span class="p-sec-t">${fmt(s.secs * 1000)}</span></div>
             <div class="p-chips">${s.steps
-              .map((st: Step) => `<button class="p-chip" data-step="${st.index}" title="${st.index + 1}. ${esc(st.title)}" style="flex:${st.secs}">${st.index + 1}</button>`)
+              .map((st: Step) => `<button class="p-chip" data-step="${st.index}" title="${st.index + 1}. ${esc(st.title)}" style="flex:${Math.max(st.secs, 5)}">${st.index + 1}</button>`)
               .join('')}</div>
           </div>`,
         )

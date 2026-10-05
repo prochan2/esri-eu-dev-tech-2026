@@ -1,37 +1,33 @@
 import './styles/base.css';
 import './styles/deck.css';
 import { deck } from './deck';
-import { DeckView, fitStage, worldBounds } from './engine/deck';
+import { highlightAll } from './deck/highlight';
+import { DeckView, fitStage } from './engine/deck';
 import { bindKeys } from './engine/keys';
 import { Sync } from './engine/sync';
 import { contourSvg } from './engine/terrain';
-import { highlightAll } from './deck/highlight';
 
 const params = new URLSearchParams(location.search);
 const view = params.get('view') ?? 'audience';
 
-async function createStage(host: HTMLElement) {
+export async function createStage(host: HTMLElement) {
   const stage = document.createElement('div');
   stage.className = 'stage';
   stage.innerHTML = `<div class="backdrop"></div>`;
   host.appendChild(stage);
-  const b = worldBounds(deck);
-  const m = 6000;
   const dv = new DeckView(deck, stage);
-  dv.world.insertAdjacentHTML(
-    'afterbegin',
-    contourSvg({ x0: b.x0 - m, y0: b.y0 - m, x1: b.x1 + m, y1: b.y1 + m }),
-  );
+  dv.world.insertAdjacentHTML('beforebegin', `<div class="terrain-layer">${contourSvg({ x0: -2400, y0: -1600, x1: 4320, y1: 2680 })}</div>`);
   stage.insertAdjacentHTML('beforeend', `<div class="blackout"></div>`);
   await highlightAll(stage);
   return { stage, dv };
 }
 
-async function audience(opts: { writable: boolean }) {
+async function audience() {
   document.body.classList.add('view-audience');
+  document.title = deck.title;
   const { stage, dv } = await createStage(document.body);
   fitStage(stage);
-  const sync = new Sync(opts.writable);
+  const sync = new Sync(true);
   const render = (instant: boolean) => {
     const s = sync.state;
     dv.go(s.step, { instant, overview: s.overview });
@@ -39,8 +35,9 @@ async function audience(opts: { writable: boolean }) {
   };
   render(true);
   sync.on(() => render(false));
-  if (opts.writable) bindKeys(sync, { count: dv.steps.length });
-  document.title = deck.title;
+  bindKeys(sync, { count: dv.steps.length });
+  // dev helper: jump without animation, e.g. __go(12) in the console
+  if (import.meta.env.DEV) Object.assign(window, { __go: (i: number) => (sync.update({ step: i }), dv.go(i, { instant: true }), dv.steps[i]?.id) });
 }
 
 /** Preview inside the presenter window: shows a given step, driven by postMessage. */
@@ -48,8 +45,7 @@ async function preview() {
   document.body.classList.add('view-preview');
   const { stage, dv } = await createStage(document.body);
   fitStage(stage);
-  const start = Number(params.get('step') ?? 0);
-  dv.go(start, { instant: true });
+  dv.go(Number(params.get('step') ?? 0), { instant: true });
   window.addEventListener('message', (e) => {
     if (e.origin !== location.origin) return;
     const m = e.data as { step: number; instant?: boolean; overview?: boolean; blackout?: boolean };
@@ -71,5 +67,5 @@ switch (view) {
     void import('./print').then((m) => m.print());
     break;
   default:
-    void audience({ writable: true });
+    void audience();
 }

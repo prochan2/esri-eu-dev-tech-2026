@@ -1,53 +1,55 @@
 import { gsap } from 'gsap';
-import type { Camera, FrameDef } from './types';
+import type { Camera } from './types';
 
 export const VW = 1920;
 export const VH = 1080;
 
 const rad = (d: number) => (d * Math.PI) / 180;
 
-/** Camera that shows a frame exactly filling the viewport. */
-export function frameCamera(f: FrameDef): Camera {
-  const s = f.scale ?? 1;
-  return { x: f.x, y: f.y, zoom: 1 / s, rot: f.rot ?? 0 };
+/** 2D affine matrix [a b c d e f]: x' = a x + c y + e, y' = b x + d y + f */
+export type Mat = [number, number, number, number, number, number];
+
+export const I: Mat = [1, 0, 0, 1, 0, 0];
+
+export function mul(m: Mat, n: Mat): Mat {
+  return [
+    m[0] * n[0] + m[2] * n[1],
+    m[1] * n[0] + m[3] * n[1],
+    m[0] * n[2] + m[2] * n[3],
+    m[1] * n[2] + m[3] * n[3],
+    m[0] * n[4] + m[2] * n[5] + m[4],
+    m[1] * n[4] + m[3] * n[5] + m[5],
+  ];
 }
 
-/**
- * Camera that zooms onto an element inside a frame.
- * Uses layout offsets (unaffected by CSS transforms), so it works mid-flight.
- */
-export function focusCamera(f: FrameDef, frameEl: HTMLElement, target: HTMLElement, pad = 0.08): Camera {
-  let x = 0;
-  let y = 0;
-  let el: HTMLElement | null = target;
-  while (el && el !== frameEl) {
-    x += el.offsetLeft;
-    y += el.offsetTop;
-    el = el.offsetParent as HTMLElement | null;
-  }
-  const w = target.offsetWidth;
-  const h = target.offsetHeight;
-  const s = f.scale ?? 1;
-  const r = rad(f.rot ?? 0);
-  // centre of target in frame-local px, relative to frame centre
-  const lx = (x + w / 2 - VW / 2) * s;
-  const ly = (y + h / 2 - VH / 2) * s;
-  const wx = f.x + lx * Math.cos(r) - ly * Math.sin(r);
-  const wy = f.y + lx * Math.sin(r) + ly * Math.cos(r);
-  const fit = Math.min((VW * (1 - 2 * pad)) / (w * s), (VH * (1 - 2 * pad)) / (h * s));
-  return { x: wx, y: wy, zoom: fit, rot: f.rot ?? 0 };
+export function local(x: number, y: number, s: number, r: number): Mat {
+  const c = Math.cos(rad(r)) * s;
+  const n = Math.sin(rad(r)) * s;
+  return [c, n, -n, c, x, y];
 }
 
-/** Camera that fits a world-space bounding box. */
-export function boundsCamera(b: { x0: number; y0: number; x1: number; y1: number }, pad = 0.04): Camera {
-  const w = b.x1 - b.x0;
-  const h = b.y1 - b.y0;
-  return {
-    x: (b.x0 + b.x1) / 2,
-    y: (b.y0 + b.y1) / 2,
-    zoom: Math.min((VW * (1 - 2 * pad)) / w, (VH * (1 - 2 * pad)) / h),
-    rot: 0,
-  };
+export function apply(m: Mat, x: number, y: number): [number, number] {
+  return [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+}
+
+export interface ZoneGeom {
+  id: string;
+  el: HTMLElement;
+  w: number;
+  h: number;
+  /** zone-local → world */
+  m: Mat;
+  /** world px per local px */
+  scale: number;
+  /** world rotation, degrees */
+  rot: number;
+}
+
+/** Camera that frames a zone (rotated to the zone's orientation). */
+export function zoneCamera(z: ZoneGeom, pad = 0.04): Camera {
+  const [cx, cy] = apply(z.m, z.w / 2, z.h / 2);
+  const zoom = Math.min((VW * (1 - 2 * pad)) / (z.w * z.scale), (VH * (1 - 2 * pad)) / (z.h * z.scale));
+  return { x: cx, y: cy, zoom, rot: z.rot };
 }
 
 export function cameraTransform(c: Camera): string {
@@ -62,68 +64,81 @@ function shortestRot(from: number, to: number): number {
 }
 
 /**
- * Prezi-style flight: pan + zoom with an "arc" that zooms out mid-way when
- * the two cameras are far apart (in screen terms), then zooms back in.
+ * Smooth zoom-and-pan (after van Wijk & Nuij, "Smooth and efficient zooming and panning").
+ * Moves along the optimal path in (x, y, log zoom) space: when two views are far apart
+ * it zooms out first, then in — the Prezi feel — and it keeps on-screen motion uniform.
  */
+export function flightPath(a: Camera, b: Camera) {
+  const rho = 1.42;
+  const w0 = VW / a.zoom;
+  const w1 = VW / b.zoom;
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const d = Math.hypot(dx, dy);
+  const rot1 = shortestRot(a.rot, b.rot);
+  const lerpRot = (t: number) => a.rot + (rot1 - a.rot) * t;
+
+  if (d < 1e-6 * Math.max(w0, w1)) {
+    // pure zoom
+    const S = Math.abs(Math.log(w1 / w0)) / rho;
+    return {
+      S,
+      at: (t: number): Camera => ({ x: a.x + dx * t, y: a.y + dy * t, zoom: VW / (w0 * Math.exp(Math.log(w1 / w0) * t)), rot: lerpRot(t) }),
+    };
+  }
+  const b0 = (w1 * w1 - w0 * w0 + rho ** 4 * d * d) / (2 * w0 * rho * rho * d);
+  const b1 = (w1 * w1 - w0 * w0 - rho ** 4 * d * d) / (2 * w1 * rho * rho * d);
+  const r0 = Math.log(-b0 + Math.sqrt(b0 * b0 + 1));
+  const r1 = Math.log(-b1 + Math.sqrt(b1 * b1 + 1));
+  const S = (r1 - r0) / rho;
+  const ux = dx / d;
+  const uy = dy / d;
+  return {
+    S,
+    at: (t: number): Camera => {
+      const s = t * S;
+      const u = (w0 / (rho * rho)) * Math.cosh(r0) * Math.tanh(rho * s + r0) - (w0 / (rho * rho)) * Math.sinh(r0);
+      const w = (w0 * Math.cosh(r0)) / Math.cosh(rho * s + r0);
+      return { x: a.x + ux * u, y: a.y + uy * u, zoom: VW / w, rot: lerpRot(t) };
+    },
+  };
+}
+
 export class CameraRig {
-  cam: Camera = { x: 0, y: 0, zoom: 1, rot: 0 };
+  cam: Camera = { x: VW / 2, y: VH / 2, zoom: 1, rot: 0 };
   private tween?: gsap.core.Tween;
 
-  constructor(private world: HTMLElement, private onUpdate?: (c: Camera) => void) {}
+  constructor(private world: HTMLElement, private onUpdate?: (c: Camera, moving: boolean) => void) {}
 
   set(c: Camera) {
     this.tween?.kill();
     this.cam = { ...c };
-    this.apply();
+    this.apply(false);
   }
 
   fly(to: Camera, opts: { instant?: boolean } = {}) {
     this.tween?.kill();
     if (opts.instant) return this.set(to);
-
-    const from = { ...this.cam };
-    const toRot = shortestRot(from.rot, to.rot);
-    const lz0 = Math.log(from.zoom);
-    const lz1 = Math.log(to.zoom);
-    // distance in screen px at the smaller zoom
-    const dist = Math.hypot(to.x - from.x, to.y - from.y) * Math.min(from.zoom, to.zoom);
-    const span = dist / VW; // 1 = one screen width away
-    const bump = span > 0.6 ? Math.min(Math.log(1 + span) * 0.9, 2.6) : 0;
-    const dz = Math.abs(lz1 - lz0);
-    const duration = Math.min(2.2, 0.75 + 0.35 * Math.log(1 + span) + 0.18 * dz + 0.25 * bump);
-
+    const path = flightPath(this.cam, to);
+    const duration = Math.min(2.6, Math.max(0.7, 0.55 + path.S * 0.42));
     const p = { t: 0 };
-    this.world.style.willChange = 'transform';
     this.tween = gsap.to(p, {
       t: 1,
       duration,
       ease: 'power2.inOut',
       onUpdate: () => {
-        const t = p.t;
-        // zoom in log space with an arc
-        const lz = lz0 + (lz1 - lz0) * t - bump * Math.sin(Math.PI * t);
-        const z = Math.exp(lz);
-        // When diving into a much smaller target, pan early so it stays in view.
-        const u = lz1 - lz0 > 1 && bump === 0 ? 1 - Math.pow(1 - t, 2) : t;
-        this.cam = {
-          x: from.x + (to.x - from.x) * u,
-          y: from.y + (to.y - from.y) * u,
-          zoom: z,
-          rot: from.rot + (toRot - from.rot) * t,
-        };
-        this.apply();
+        this.cam = path.at(p.t);
+        this.apply(true);
       },
       onComplete: () => {
-        this.cam = { ...to, rot: to.rot };
-        this.apply();
-        // drop the compositing hint so Chrome re-rasterises text crisply
-        this.world.style.willChange = 'auto';
+        this.cam = { ...to };
+        this.apply(false);
       },
     });
   }
 
-  private apply() {
+  private apply(moving: boolean) {
     this.world.style.transform = cameraTransform(this.cam);
-    this.onUpdate?.(this.cam);
+    this.onUpdate?.(this.cam, moving);
   }
 }

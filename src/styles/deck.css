@@ -29,6 +29,14 @@
   transform-origin: 0 0;
 }
 
+.terrain-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
 .terrain {
   position: absolute;
   overflow: visible;
@@ -47,17 +55,6 @@
   stroke-width: 1.4;
 }
 
-.frame {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1920px;
-  height: 1080px;
-  transform-origin: 0 0;
-  padding: 110px 130px;
-  display: flex;
-  flex-direction: column;
-}
 
 .blackout {
   position: absolute;
@@ -131,6 +128,20 @@
   animation-delay: 0s !important;
 }
 
-.view-preview .stage {
-  cursor: pointer;
+
+/* ---------- zones ---------- */
+.zone {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+.lod-hide > * {
+  visibility: hidden;
+}
+.lod-hide > .ph {
+  visibility: visible;
+}
+.zone.off-screen {
+  visibility: hidden;
 }
