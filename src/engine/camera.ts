@@ -116,9 +116,13 @@ export class CameraRig {
     this.apply(false);
   }
 
-  fly(to: Camera, opts: { instant?: boolean } = {}) {
+  /** Flies to a camera; returns the flight duration in seconds (0 when instant). */
+  fly(to: Camera, opts: { instant?: boolean } = {}): number {
     this.tween?.kill();
-    if (opts.instant) return this.set(to);
+    if (opts.instant) {
+      this.set(to);
+      return 0;
+    }
     const path = flightPath(this.cam, to);
     const duration = Math.min(2.6, Math.max(0.7, 0.55 + path.S * 0.42));
     const p = { t: 0 };
@@ -135,6 +139,7 @@ export class CameraRig {
         this.apply(false);
       },
     });
+    return duration;
   }
 
   private apply(moving: boolean) {

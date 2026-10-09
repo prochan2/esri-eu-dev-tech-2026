@@ -1,3 +1,4 @@
+import { gsap } from 'gsap';
 import { CameraRig, I, VH, VW, cameraTransform, local, mul, zoneCamera, type ZoneGeom } from './camera';
 import type { Camera, DeckDef, Step } from './types';
 
@@ -11,6 +12,9 @@ export function flatten(def: DeckDef): Step[] {
   }
   return steps;
 }
+
+/** Elements whose numbers count up on arrival. */
+const COUNTERS = '.kpi b, .stats .nw, .pt-facts b, .ai-kpis b, .proj-count .n, [data-count]';
 
 /** Reads zone geometry from data attributes (+ border widths, so the world must be in the DOM). */
 export function measureZones(world: HTMLElement): Map<string, ZoneGeom> {
@@ -123,8 +127,47 @@ export class DeckView {
     if (changed || overview !== this.overview || opts.instant) {
       this.overview = overview;
       const cam = overview ? zoneCamera(this.zones.get('overview')!, 0) : this.cameraFor(step);
-      this.rig.fly(cam, { instant: opts.instant });
+      const fly = this.rig.fly(cam, { instant: opts.instant });
+      // arrival animations (CSS) start near the end of the flight
+      this.stage.style.setProperty('--fly', `${fly}s`);
+      this.stage.style.setProperty('--land', `${Math.max(0, fly * 0.6)}s`);
+      this.countUp(step.target, opts.instant ? -1 : Math.max(0, fly * 0.6));
     }
+  }
+
+  /**
+   * Numbers count up when their zone becomes the camera target, or when they
+   * appear in a build. data-from="137" counts from another value (e.g. down).
+   * delay < 0 → show the final value immediately.
+   */
+  private countUp(target: string, delay: number) {
+    const zone = this.zones.get(target)?.el;
+    this.world.querySelectorAll<HTMLElement>(COUNTERS).forEach((el) => {
+      el.dataset.final ??= el.textContent ?? '';
+      const inTarget = !!zone && zone !== this.world && zone.contains(el);
+      const visible = inTarget && !el.closest('.b-pre,.b-off');
+      const run = visible && (el.dataset.cTarget !== target || el.dataset.cVis !== '1');
+      el.dataset.cTarget = inTarget ? target : '';
+      el.dataset.cVis = visible ? '1' : '0';
+      if (!run) return;
+      const m = /^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/s.exec(el.dataset.final);
+      if (!m || delay < 0) {
+        el.textContent = el.dataset.final;
+        return;
+      }
+      const [, pre, num, post] = m;
+      const decimals = num.includes('.') ? num.split('.')[1].length : 0;
+      const comma = num.includes(',');
+      const end = Number(num.replace(/,/g, ''));
+      const o = { v: Number(el.dataset.from ?? 0) };
+      const fmt = (v: number) => {
+        const t = v.toFixed(decimals);
+        return comma ? Number(t).toLocaleString('en-US', { minimumFractionDigits: decimals }) : t;
+      };
+      gsap.killTweensOf(el);
+      el.textContent = pre + fmt(o.v) + post;
+      gsap.to(o, { v: end, duration: 1.1, delay: delay + 0.15, ease: 'power2.out', onUpdate: () => (el.textContent = pre + fmt(o.v) + post), onComplete: () => (el.textContent = el.dataset.final!) });
+    });
   }
 
   /**

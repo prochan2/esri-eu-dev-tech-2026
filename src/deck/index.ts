@@ -1,4 +1,5 @@
 import '../styles/canvas.css';
+import '../styles/motion.css';
 import type { DeckDef, StepDef } from '../engine/types';
 import { buildStation, soeStation } from './build';
 import { codeStation } from './code';

@@ -1,0 +1,135 @@
+/* =========================================================
+   Motion: arrival cascades, builds, overview.
+   --land (set per step) = when the camera is about to arrive.
+   Everything uses fill-mode "backwards", so the final state is the plain
+   CSS state — the PDF export (.print) and instant jumps are unaffected.
+   ========================================================= */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes type-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ---------- 1. cascade when a zone becomes the camera target ---------- */
+.is-target :is(.tr, .stats tr, .matrix tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .h-m, .net-c, .fk, .mile, .sv, .pg, .chip, .pt-facts > div, .ai-kpis > div, .lbl, .note):not([data-in], [data-out], [data-only]) {
+  animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--land, 0s) + var(--d, 0) * 70ms);
+}
+.is-target .shiki .line:not([data-in], [data-out]) {
+  animation: type-in 0.45s ease-out backwards;
+  animation-delay: calc(var(--land, 0s) + var(--d, 0) * 35ms);
+}
+.is-target .codebox {
+  animation: rise 0.5s ease-out backwards;
+  animation-delay: var(--land, 0s);
+}
+/* stagger index for up to 24 siblings */
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .line, .fk, .mile, .pg, .chip, .pt-facts > div, .ai-kpis > div, .lbl, .note, .net-c, .sv):nth-child(2) { --d: 1; }
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .line, .fk, .mile, .pg, .chip, .pt-facts > div, .ai-kpis > div, .lbl, .note, .net-c, .sv):nth-child(3) { --d: 2; }
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .line, .fk, .mile, .pg, .chip, .pt-facts > div, .ai-kpis > div, .lbl, .note, .net-c, .sv):nth-child(4) { --d: 3; }
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .line, .fk, .mile, .pg, .chip, .pt-facts > div, .ai-kpis > div, .lbl, .note, .net-c, .sv):nth-child(5) { --d: 4; }
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .line, .fk, .mile, .pg, .chip, .pt-facts > div, .ai-kpis > div, .lbl, .note, .net-c, .sv):nth-child(6) { --d: 5; }
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .line):nth-child(7) { --d: 6; }
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .line):nth-child(8) { --d: 7; }
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .steps-l li, .dep-kid, .store-sln span, .line):nth-child(9) { --d: 8; }
+:is(.tr, tr, .nj-row, .ar, .mono-mods span, .store-sln span, .line):nth-child(10) { --d: 9; }
+:is(.tr, tr, .ar, .mono-mods span, .store-sln span, .line):nth-child(11) { --d: 10; }
+:is(.tr, tr, .mono-mods span, .store-sln span, .line):nth-child(12) { --d: 11; }
+:is(.mono-mods span, .line):nth-child(13) { --d: 12; }
+:is(.mono-mods span, .line):nth-child(14) { --d: 13; }
+:is(.mono-mods span, .line):nth-child(15) { --d: 14; }
+:is(.mono-mods span, .line):nth-child(16) { --d: 15; }
+:is(.mono-mods span, .line):nth-child(17) { --d: 16; }
+.line:nth-child(n + 18) { --d: 17; }
+/* the 137-line wall is texture, not text: no typing effect there */
+.is-target .wall .shiki .line {
+  animation: none;
+}
+
+/* ---------- 2. builds: children of something that just appeared ---------- */
+.b-on :is(.vp, .rp-3rd span, .dep-kid, .ar, .h-m) {
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(0.15s + var(--d, 0) * 90ms);
+}
+.vp:nth-child(2) { --d: 1; }
+.vp:nth-child(3) { --d: 2; }
+.vp:nth-child(4) { --d: 3; }
+.vp:nth-child(5) { --d: 4; }
+.vp:nth-child(6) { --d: 5; }
+.rp-3rd span:nth-child(2) { --d: 1; }
+.rp-3rd span:nth-child(3) { --d: 2; }
+.b-on > .lbl,
+.b-on > .codebox {
+  animation: slide-in 0.5s ease-out backwards;
+  animation-delay: 0.1s;
+}
+
+/* ---------- 3. overview: flowing arrows, growing history bars ---------- */
+@keyframes flow-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+}
+.ov-flow g circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: flow-pulse 2.4s ease-in-out infinite;
+}
+.ov-flow g:nth-child(2) circle {
+  animation-delay: 0.4s;
+}
+.ov-flow g:nth-child(3) circle {
+  animation-delay: 0.8s;
+}
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+.h-bars i,
+.is-target .bar {
+  transform-origin: bottom;
+  animation: grow 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--land, 0s) + var(--d, 0) * 40ms);
+}
+.bar:nth-child(n + 2) { --d: 2; }
+.bar:nth-child(n + 5) { --d: 5; }
+.bar:nth-child(n + 8) { --d: 8; }
+.bar:nth-child(n + 11) { --d: 11; }
+.bar:nth-child(n + 14) { --d: 14; }
+.bar:nth-child(n + 17) { --d: 17; }
+
+/* no motion while preparing the PDF or when the user prefers less motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}

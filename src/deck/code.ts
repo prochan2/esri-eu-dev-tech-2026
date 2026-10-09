@@ -77,7 +77,7 @@ const proj = panel(
   <div class="proj-right">
     <div class="proj-count">
       <span class="n nold" ${a({ out: 'proj-11', anim: 'zoom' })}>${legacyLines.length}</span>
-      <span class="n nnew" ${a({ in: 'proj-11', anim: 'zoom' })}>${modernLineCount}</span>
+      <span class="n nnew" data-from="${legacyLines.length}" ${a({ in: 'proj-11', anim: 'zoom' })}>${modernLineCount}</span>
       <span class="unit">lines</span>
     </div>
     <div class="proj-file">Wgis.Soe.ModuleB.csproj · one SOE feature module</div>
