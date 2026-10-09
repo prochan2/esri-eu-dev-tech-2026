@@ -108,12 +108,32 @@ export class CameraRig {
   cam: Camera = { x: VW / 2, y: VH / 2, zoom: 1, rot: 0 };
   private tween?: gsap.core.Tween;
 
-  constructor(private world: HTMLElement, private onUpdate?: (c: Camera, moving: boolean) => void) {}
+  private sharpen = 0;
+
+  /**
+   * The world lives on its own GPU layer (will-change: transform), so a flight
+   * only re-composites a cached texture instead of repainting the whole canvas
+   * every frame. A cached texture is rasterised at one scale; after each move we
+   * drop and re-create the layer while the camera rests, which re-rasterises it
+   * crisply at the new zoom (and keeps that cost out of the next flight).
+   */
+  constructor(private world: HTMLElement, private onUpdate?: (c: Camera, moving: boolean) => void) {
+    world.style.willChange = 'transform';
+  }
+
+  private resharpen() {
+    cancelAnimationFrame(this.sharpen);
+    this.world.style.willChange = 'auto';
+    this.sharpen = requestAnimationFrame(() => {
+      this.sharpen = requestAnimationFrame(() => (this.world.style.willChange = 'transform'));
+    });
+  }
 
   set(c: Camera) {
     this.tween?.kill();
     this.cam = { ...c };
     this.apply(false);
+    this.resharpen();
   }
 
   /** Flies to a camera; returns the flight duration in seconds (0 when instant). */
@@ -123,6 +143,9 @@ export class CameraRig {
       this.set(to);
       return 0;
     }
+    // make sure we fly on the GPU layer (a resharpen may still be pending)
+    cancelAnimationFrame(this.sharpen);
+    this.world.style.willChange = 'transform';
     const path = flightPath(this.cam, to);
     const duration = Math.min(2.6, Math.max(0.7, 0.55 + path.S * 0.42));
     const p = { t: 0 };
@@ -137,6 +160,7 @@ export class CameraRig {
       onComplete: () => {
         this.cam = { ...to };
         this.apply(false);
+        this.resharpen();
       },
     });
     return duration;

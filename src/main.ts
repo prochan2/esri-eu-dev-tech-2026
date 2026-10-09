@@ -19,6 +19,11 @@ export async function createStage(host: HTMLElement) {
   dv.world.insertAdjacentHTML('beforebegin', `<div class="terrain-layer">${contourSvg({ x0: -2400, y0: -1600, x1: 4320, y1: 2680 })}</div>`);
   stage.insertAdjacentHTML('beforeend', `<div class="blackout"></div>`);
   await highlightAll(stage);
+  // decode every image up front, so a flight never waits for a screenshot to decode
+  stage.querySelectorAll('img').forEach((img) => {
+    img.decoding = 'async';
+    void img.decode?.().catch(() => {});
+  });
   return { stage, dv };
 }
 

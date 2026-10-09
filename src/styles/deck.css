@@ -145,3 +145,7 @@
 .zone.off-screen {
   visibility: hidden;
 }
+/* the background terrain only moves with a damped zoom: a cached GPU layer is enough */
+.terrain-layer {
+  will-change: transform;
+}

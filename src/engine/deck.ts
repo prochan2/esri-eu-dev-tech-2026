@@ -1,5 +1,5 @@
 import { gsap } from 'gsap';
-import { CameraRig, I, VH, VW, cameraTransform, local, mul, zoneCamera, type ZoneGeom } from './camera';
+import { CameraRig, I, VH, VW, cameraTransform, flightPath, local, mul, zoneCamera, type ZoneGeom } from './camera';
 import type { Camera, DeckDef, Step } from './types';
 
 export function flatten(def: DeckDef): Step[] {
@@ -99,9 +99,9 @@ export class DeckView {
       // background terrain: parallax layer that zooms much less than the content
       const t = stage.querySelector<HTMLElement>('.terrain-layer');
       if (t) t.style.transform = cameraTransform({ ...c, zoom: Math.pow(c.zoom, 0.3) });
-      // synchronous: a deferred rAF would be cancelled by every animation tick
-      // and culled zones would stay hidden for the whole flight
-      this.lod(c);
+      // culling changes repaint the GPU layer, so they happen only at rest;
+      // before a flight, go() prepares visibility for the whole path
+      if (!moving) this.lod([c]);
     });
   }
 
@@ -127,6 +127,11 @@ export class DeckView {
     if (changed || overview !== this.overview || opts.instant) {
       this.overview = overview;
       const cam = overview ? zoneCamera(this.zones.get('overview')!, 0) : this.cameraFor(step);
+      if (!opts.instant) {
+        // show everything the camera will pass over, once, before it moves
+        const path = flightPath(this.rig.cam, cam);
+        this.lod(Array.from({ length: 17 }, (_, i) => path.at(i / 16)));
+      }
       const fly = this.rig.fly(cam, { instant: opts.instant });
       // arrival animations (CSS) start near the end of the flight
       this.stage.style.setProperty('--fly', `${fly}s`);
@@ -174,27 +179,34 @@ export class DeckView {
    * Level of detail: zones marked .lod hide their contents when they are tiny on
    * screen, which keeps rasterising the huge canvas cheap during flights.
    */
-  lod(c: Camera) {
-    // world → screen for the current camera
-    const r = (-c.rot * Math.PI) / 180;
-    const cos = Math.cos(r) * c.zoom;
-    const sin = Math.sin(r) * c.zoom;
-    const toScreen = (x: number, y: number) => [VW / 2 + cos * (x - c.x) - sin * (y - c.y), VH / 2 + sin * (x - c.x) + cos * (y - c.y)];
+  lod(cams: Camera[]) {
     const margin = 200;
+    const views = cams.map((c) => {
+      const r = (-c.rot * Math.PI) / 180;
+      return { c, cos: Math.cos(r) * c.zoom, sin: Math.sin(r) * c.zoom };
+    });
     for (const z of this.zones.values()) {
       if (z.id === 'overview') continue;
-      const lodded = z.el.classList.contains('lod');
-      if (lodded) z.el.classList.toggle('lod-hide', z.w * z.scale * c.zoom < Number(z.el.dataset.lod ?? 90));
-      // cull zones that are entirely off screen (cheap rasterisation when zoomed in)
-      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-      for (const [lx, ly] of [[0, 0], [z.w, 0], [0, z.h], [z.w, z.h]]) {
-        const [wx, wy] = [z.m[0] * lx + z.m[2] * ly + z.m[4], z.m[1] * lx + z.m[3] * ly + z.m[5]];
-        const [sx, sy] = toScreen(wx, wy);
-        x0 = Math.min(x0, sx); x1 = Math.max(x1, sx); y0 = Math.min(y0, sy); y1 = Math.max(y1, sy);
+      const corners = [[0, 0], [z.w, 0], [0, z.h], [z.w, z.h]].map(([lx, ly]) => [z.m[0] * lx + z.m[2] * ly + z.m[4], z.m[1] * lx + z.m[3] * ly + z.m[5]]);
+      let seen = false;
+      let px = 0;
+      for (const { c, cos, sin } of views) {
+        px = Math.max(px, z.w * z.scale * c.zoom);
+        if (seen) continue;
+        let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+        for (const [wx, wy] of corners) {
+          const sx = VW / 2 + cos * (wx - c.x) - sin * (wy - c.y);
+          const sy = VH / 2 + sin * (wx - c.x) + cos * (wy - c.y);
+          x0 = Math.min(x0, sx); x1 = Math.max(x1, sx); y0 = Math.min(y0, sy); y1 = Math.max(y1, sy);
+        }
+        seen = !(x1 < -margin || y1 < -margin || x0 > VW + margin || y0 > VH + margin);
       }
-      z.el.classList.toggle('off-screen', x1 < -margin || y1 < -margin || x0 > VW + margin || y0 > VH + margin);
+      // cull zones off screen for the whole move; hide details that stay tiny
+      z.el.classList.toggle('off-screen', !seen);
+      if (z.el.classList.contains('lod')) z.el.classList.toggle('lod-hide', px < Number(z.el.dataset.lod ?? 90));
     }
   }
+
 }
 
 /** Scales the fixed 1920×1080 stage to fit its container (letterboxed). */
