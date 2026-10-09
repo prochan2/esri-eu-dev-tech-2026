@@ -6,7 +6,7 @@ import { a, code, docQr, docs, img, logoRow, panel, station, tri, who, zone } fr
 const servers = panel(
   { id: 'servers', ...cell(0, 0), title: 'One jump: 10.9.1 → 11.5', fixed: 'why-jump', tag: '10.9.1', doc: docs.esriWhatsNew, logos: ['arcgis'] },
   `<div class="srv">
-    <div class="sv old">${who.old}<b>10.9.1</b><span>ArcMap runtime<br>.NET Framework · ArcObjects COM</span></div>
+    <div class="sv old">${who.old}<b>10.9.1</b><span>ArcMap runtime<br>.NET Framework<br>ArcObjects COM</span></div>
     <svg class="sv-arc" viewBox="0 0 1000 300" preserveAspectRatio="none" ${a({ in: 'why-jump', anim: 'fade' })}><path d="M30 290 C 280 -60, 720 -60, 970 290"/></svg>
     <div class="sv-mid" ${a({ in: 'why-jump', anim: 'fade' })}>
       <div class="mile"><b>11.0</b><span>ArcMap runtime retired</span></div>

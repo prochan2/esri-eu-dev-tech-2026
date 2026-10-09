@@ -47,6 +47,8 @@ export const deck: DeckDef = {
         { id: 'title', title: 'Title — the big picture', target: 'overview', secs: 20, notes: ['Let me tell you a story about…', '…server extensions we took over from an external supplier in March 2025.', 'Code → build → .soe → ArcGIS Server. Everything here is still legacy.'] },
         { id: 'why', title: 'Where we started: 10.9.1', target: 'servers', secs: 10, notes: ['ArcGIS Enterprise 10.9.1 — ArcMap runtime.', 'SOEs/SOIs on .NET Framework, ArcObjects COM interop.'] },
         { id: 'why-jump', title: 'The jump to 11.5', target: 'servers', secs: 14, notes: ['We went straight to 11.5.', '11.0 retired the ArcMap runtime; 11.3 brought .NET 8 extensions.', 'Our extensions simply would not load any more.'] },
+        { id: 'net', title: '.NET Framework vs .NET', target: 'net', secs: 9, notes: ['.NET Framework: Windows only, 4.8.1 is the last.', '.NET: cross-platform, LTS releases.'] },
+        { id: 'net-where', title: 'Where is ArcGIS?', target: 'net', secs: 12, notes: ['ArcGIS Server itself runs on Linux.', 'But on Linux it hosts only Java extensions — the limit is ArcGIS, not .NET.'] },
         { id: 'fix-all', title: 'Fix everything around', target: 'overview', secs: 8, notes: ['If we touch every extension anyway…', '…fix the project files, packages, build, versioning and deployment too.'] },
       ],
     },
@@ -70,10 +72,8 @@ export const deck: DeckDef = {
       ],
     },
     {
-      section: { id: 'build', title: '.NET & multitargeting' },
+      section: { id: 'build', title: 'Multitargeting' },
       steps: [
-        { id: 'net', title: '.NET Framework vs .NET', target: 'net', secs: 9, notes: ['.NET Framework: Windows only, 4.8.1 is the last.', '.NET: cross-platform, LTS releases.'] },
-        { id: 'net-where', title: 'Where is ArcGIS?', target: 'net', secs: 12, notes: ['ArcGIS Server itself runs on Linux.', 'But on Linux it hosts only Java extensions — the limit is ArcGIS, not .NET.'] },
         { id: 'multi', title: 'Multitargeting net472;net8.0', target: 'multi', secs: 12, notes: ['After 11.5 worked, we backported: net472 for 10.9.1 with Pro services.', 'One codebase, two .soe flavours.'] },
         { id: 'multi-db', title: 'Both servers, one geodatabase', target: 'multi', secs: 8, notes: ['Both server generations run in parallel on the same 10.9.1 geodatabase.'] },
       ],
