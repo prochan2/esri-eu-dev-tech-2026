@@ -3,8 +3,7 @@ export const config = {
   title: 'Migrating ArcGIS Server Extensions to the 21st Century',
   event: 'Esri European Developer & Technology Summit 2026',
   speaker: 'Antonín Procházka',
-  // TODO(speaker): role as it should appear on the intro beat
-  role: 'GIS platform developer',
+  role: 'Senior Software Engineer @ CETIN',
   company: 'CETIN',
   // TODO(speaker): where the QR code on the closing screen should point
   qrUrl: 'https://www.cetin.cz/',

@@ -12,22 +12,24 @@ export function flatten(def: DeckDef): Step[] {
   return steps;
 }
 
-/** Reads zone geometry from data attributes (no layout needed). */
+/** Reads zone geometry from data attributes (+ border widths, so the world must be in the DOM). */
 export function measureZones(world: HTMLElement): Map<string, ZoneGeom> {
   const out = new Map<string, ZoneGeom>();
   out.set('overview', { id: 'overview', el: world, w: VW, h: VH, m: I, scale: 1, rot: 0 });
-  const walk = (el: Element, m: typeof I, scale: number, rot: number) => {
+  // Absolutely positioned children start inside the parent's border, so a
+  // child's origin is offset by the parent zone's border width (clientLeft/Top).
+  const walk = (el: Element, m: typeof I, scale: number, rot: number, bx = 0, by = 0) => {
     for (const c of el.children) {
       const h = c as HTMLElement;
       if (h.classList?.contains('zone')) {
         const d = h.dataset;
         const s = Number(d.s ?? 1);
         const r = Number(d.r ?? 0);
-        const zm = mul(m, local(Number(d.x ?? 0), Number(d.y ?? 0), s, r));
+        const zm = mul(m, local(bx + Number(d.x ?? 0), by + Number(d.y ?? 0), s, r));
         const g: ZoneGeom = { id: d.zone!, el: h, w: Number(d.w), h: Number(d.h), m: zm, scale: scale * s, rot: rot + r };
         out.set(g.id, g);
-        walk(h, zm, g.scale, g.rot);
-      } else walk(h, m, scale, rot);
+        walk(h, zm, g.scale, g.rot, h.clientLeft, h.clientTop);
+      } else walk(h, m, scale, rot, bx, by);
     }
   };
   walk(world, I, 1, 0);
@@ -76,7 +78,6 @@ export class DeckView {
   zones: Map<string, ZoneGeom>;
   private current = -1;
   private overview = false;
-  private lodRaf = 0;
 
   constructor(readonly def: DeckDef, readonly stage: HTMLElement, world?: HTMLElement) {
     this.steps = flatten(def);
@@ -94,8 +95,9 @@ export class DeckView {
       // background terrain: parallax layer that zooms much less than the content
       const t = stage.querySelector<HTMLElement>('.terrain-layer');
       if (t) t.style.transform = cameraTransform({ ...c, zoom: Math.pow(c.zoom, 0.3) });
-      cancelAnimationFrame(this.lodRaf);
-      this.lodRaf = requestAnimationFrame(() => this.lod(c));
+      // synchronous: a deferred rAF would be cancelled by every animation tick
+      // and culled zones would stay hidden for the whole flight
+      this.lod(c);
     });
   }
 

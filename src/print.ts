@@ -32,12 +32,12 @@ export async function print() {
     const world = proto.cloneNode(true) as HTMLElement;
     applyState(world, all, step.index);
     deck.effects?.[step.id]?.(world, true);
+    page.appendChild(world);
+    document.body.appendChild(page); // measuring needs layout (border widths)
     const z = measureZones(world).get(step.target)!;
     const cam = zoneCamera(z, step.pad ?? (step.target === 'overview' ? 0 : 0.04));
     world.style.transform = cameraTransform(cam);
     page.querySelector<HTMLElement>('.terrain-layer')!.style.transform = cameraTransform({ ...cam, zoom: Math.pow(cam.zoom, 0.3) });
-    page.appendChild(world);
-    document.body.appendChild(page);
   }
   document.body.dataset.ready = '1';
 }

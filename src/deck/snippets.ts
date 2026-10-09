@@ -3,163 +3,6 @@
  * in the comments so every number on screen can be traced back.
  */
 
-/** Wgis.Soe.csproj at 94b163d8 (2025-06-13) — 135 lines. */
-export const legacyCsproj = `<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.props" Condition="Exists('..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F9A1F056-AB5A-4A93-9242-9BF85721AB5A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Wgis.Soe</RootNamespace>
-    <AssemblyName>Wgis.Soe</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\\..\\..\\bin\\debug\\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\\..\\..\\bin\\release\\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\\..\\..\\..\\sign\\wgisKey.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\\..\\..\\..\\..\\lib\\castle.core\\net45\\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor">
-      <HintPath>..\\..\\..\\..\\..\\lib\\castle.windsor\\net45\\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="ESRI.ArcGIS.Carto, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ESRI.ArcGIS.Geodatabase, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ESRI.ArcGIS.Geometry, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ESRI.ArcGIS.Server, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ESRI.ArcGIS.SOESupport, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ESRI.ArcGIS.System, Version=10.8.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Shared.Common, Version=10.8.1.0, Culture=neutral, PublicKeyToken=d67685bd2ec165ce, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\\..\\..\\..\\..\\common\\bin\\$(Configuration)\\net472\\Shared.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Wgis, Version=10.8.1.0, Culture=neutral, PublicKeyToken=2a399531d6da93f9, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\\..\\..\\..\\common\\bin\\$(Configuration)\\Wgis.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="NullRestRequestHandler.cs" />
-    <Compile Include="RestResourceBuilder.cs" />
-    <Compile Include="ServicesInstaller.cs" />
-    <Compile Include="WgisSoe.cs" />
-    <Compile Include="Properties\\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\\..\\..\\..\\sign\\wgisKey.snk" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\\Wgis.Soe.Authorization\\Wgis.Soe.Authorization.csproj">
-      <Project>{0A28C0EA-19AB-42F7-819E-2A00D4561C78}</Project>
-      <Name>Wgis.Soe.Authorization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\\Wgis.Soe.Common\\Wgis.Soe.Common.csproj">
-      <Project>{595570af-4f08-4a59-88f6-079b83534110}</Project>
-      <Name>Wgis.Soe.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <PropertyGroup>
-    <ZipFileExtension>soe</ZipFileExtension>
-    <AddInTargetProduct>Server</AddInTargetProduct>
-    <AddInTargetVersion>10.7</AddInTargetVersion>
-  </PropertyGroup>
-  <Import Project="$(MSBuildToolsPath)\\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.props'))" />
-    <Error Condition="!Exists('..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.targets'))" />
-  </Target>
-  <Import Project="..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.targets" Condition="Exists('..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.targets')" />
-  <!--
-  <Import Project="$(MSBuildExtensionsPath)\\ESRI\\ESRI.ArcGIS.Server.SDK.targets" Condition="Exists('$(MSBuildExtensionsPath)\\ESRI\\ESRI.ArcGIS.Server.SDK.targets')" />
-  -->
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-</Project>`;
-
-/** Line categories in legacyCsproj (1-based) — they show as coloured stripes on the "wall". */
-export const legacyMarks = [
-  '42,45,78,87=c-hint',
-  '47-75=c-esri',
-  '91-95=c-compile',
-  '3,16-17,99,117-124=c-nuget',
-  '4-39=c-cfg',
-  '36-39,98=c-sign',
-  '102-109=c-guid',
-].join(';');
-
-/** Same file at HEAD — 7 lines. */
-export const modernCsproj = `<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="..\\Wgis.Soe.Authorization\\Wgis.Soe.Authorization.csproj" />
-  </ItemGroup>
-
-</Project>`;
-
 /** src/Directory.Build.props (key parts). */
 export const buildProps = `<Project>
   <PropertyGroup>
@@ -274,17 +117,6 @@ export const soeConfigXml = `<Version>{ArcGisVersion}</Version>     <!-- must be
   <DisplayName>Cetin WGIS Utility SOE</DisplayName>
   <Description>{Description}</Description>   <!-- the only field Manager shows -->`;
 
-/** build/SoeArchiveBuilder.cs (excerpt). */
-export const repack = `// Our own assemblies are merged into the SOE's DLL; Castle, Newtonsoft,
-// NLog, RestSharp, ... ship beside it in Install/.
-static readonly string[] MergedAssemblyPrefixes = ["Shared.", "Wgis."];
-
-new ILRepack(new RepackOptions {
-    OutputFile = outputAssemblyPath,        // Wgis.Soe.dll, named after the SOE
-    InputAssemblies = repackedAssemblyPaths.ToArray(),
-    Parallel = true,
-}).Repack();`;
-
 /** Wgis.WebServices.Docs/ArcGisOpenApiDocumentationProvider.cs (excerpt). */
 export const openApiProbe = `var schema = await client.GetFromJsonAsync<ArcGisResourceInfo>(
     WithToken($"{serviceUrl}/exts/{name}?f=schema", token), ct);
@@ -293,8 +125,8 @@ if (schema?.Resources is { Count: > 0 })
 
 /** Legacy BuildSOE XML — 81 hand-listed files. */
 export const addFiles = `<addFile source="%CHECKOUT_DIR%\\lib\\castle.core\\net45\\Castle.Core.dll"/>
-<addFile source="%CHECKOUT_DIR%\\cetin\\arcgisserver\\bin\\debug\\Wgis.Soe.Carto.dll"/>
-<addFile source="%CHECKOUT_DIR%\\cetin\\arcgisserver\\bin\\debug\\Wgis.Soe.Carto.pdb"/>`;
+<addFile source="%CHECKOUT_DIR%\\cetin\\arcgisserver\\bin\\debug\\Wgis.Soe.ModuleC.dll"/>
+<addFile source="%CHECKOUT_DIR%\\cetin\\arcgisserver\\bin\\debug\\Wgis.Soe.ModuleC.pdb"/>`;
 
 /** GITLAB_RUNNERS.md §5, 2026-08-20 — first SOE build on a Linux runner. */
 export const linuxRun = `$ pwsh ./build.ps1 BuildWgisSoe --configuration Debug --arcgis-version 11.5
@@ -309,3 +141,89 @@ export const monthlyCommits: [string, number][] = [
   ['2026-03', 12], ['2026-04', 81], ['2026-05', 15], ['2026-06', 59], ['2026-07', 47], ['2026-08', 184],
   ['2026-09', 52], ['2026-10', 9],
 ];
+
+/** The six legacy categories: an excerpt of the old way and the SDK-style answer. */
+export const fixes: Record<'cfg' | 'id' | 'refs' | 'esri' | 'compile' | 'nuget', { feature: string; legacy: string; now: string; doc: string }> = {
+  cfg: {
+    feature: 'SDK defaults + Directory.Build.props',
+    legacy: `<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <OutputPath>..\\..\\..\\bin\\debug\\</OutputPath>
+  <DefineConstants>DEBUG;TRACE</DefineConstants>
+</PropertyGroup>
+<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>`,
+    now: `<!-- src/Directory.Build.props: once for all projects -->
+<TargetFrameworks>net472;net8.0</TargetFrameworks>
+<ArtifactsPath>$(MSBuildThisFileDirectory)..\\artifacts</ArtifactsPath>`,
+    doc: 'https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-by-directory',
+  },
+  id: {
+    feature: 'No GUIDs · generated assembly info',
+    legacy: `<ProjectGuid>{169977A4-80E4-4B1E-9702-5578D933E906}</ProjectGuid>
+<ProjectReference Include="..\\Wgis.Soe.ModuleA\\Wgis.Soe.ModuleA.csproj">
+  <Project>{0a28c0ea-19ab-42f7-819e-2a00d4561c78}</Project>
+<Compile Include="Properties\\AssemblyInfo.cs" />`,
+    now: `<!-- .slnx: projects by path, no GUIDs -->
+<Project Path="src/.../Wgis.Soe.ModuleB.csproj" />
+<!-- AssemblyInfo generated from Directory.Build.props -->
+<Company>CETIN a.s.</Company>`,
+    doc: 'https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#assembly-attribute-properties',
+  },
+  refs: {
+    feature: 'ProjectReference + PackageReference',
+    legacy: `<Reference Include="Castle.Windsor">
+  <HintPath>..\\..\\..\\..\\..\\lib\\castle.windsor\\net45\\Castle.Windsor.dll</HintPath>
+<Reference Include="Wgis.GeoDatabase, Version=10.8.1.0, …">
+  <HintPath>..\\..\\..\\..\\common\\bin\\$(Configuration)\\Wgis.GeoDatabase.dll</HintPath>
+<Reference Include="System.Configuration" />`,
+    now: `<ProjectReference Include="..\\Wgis.Soe.ModuleI\\Wgis.Soe.ModuleI.csproj" />
+<PackageReference Include="System.Configuration.ConfigurationManager" />
+<!-- Castle, Wgis.GeoDatabase … arrive transitively -->`,
+    doc: 'https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files',
+  },
+  esri: {
+    feature: 'Esri SDK as one NuGet package',
+    legacy: `<Reference Include="ESRI.ArcGIS.Carto, Version=10.8.0.0, Culture=neutral,
+    PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+  <SpecificVersion>False</SpecificVersion>
+  <Private>False</Private>
+</Reference>   <!-- × 5 per project, 302 in the repo -->`,
+    now: `<!-- once, in the base library; flows to every SOE -->
+<PackageReference Include="Esri.ArcGIS.Enterprise.Sdk.Ref" />`,
+    doc: 'https://developers.arcgis.com/enterprise-sdk/guide/net/',
+  },
+  compile: {
+    feature: 'Default items (globbing)',
+    legacy: `<Compile Include="Handlers\\HandlerA.cs" />
+<Compile Include="Handlers\\HandlerB.cs" />
+<Compile Include="ServicesInstaller.cs" />
+<Compile Include="SpatialAnalysis.cs" />`,
+    now: `<!-- nothing: **/*.cs is included by default -->`,
+    doc: 'https://learn.microsoft.com/en-us/dotnet/core/project-sdk/overview#default-includes-and-excludes',
+  },
+  nuget: {
+    feature: 'Restore generates the imports',
+    legacy: `<Import Project="..\\packages\\GitVersion.MsBuild.5.12.0\\build\\GitVersion.MsBuild.props" … />
+<Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+  <Error Condition="!Exists('..\\packages\\…')" … />
+</Target>`,
+    now: `obj/Wgis.Soe.ModuleB.csproj.nuget.g.props
+obj/Wgis.Soe.ModuleB.csproj.nuget.g.targets
+<!-- generated by restore, never in the .csproj -->`,
+    doc: 'https://learn.microsoft.com/en-us/nuget/consume-packages/migrate-packages-config-to-package-reference',
+  },
+};
+
+/** Transitive pinning: a package nobody references directly still gets our version. */
+export const pinning = `<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+
+<!-- also wins where Newtonsoft only arrives transitively (via a package) -->
+<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />`;
+
+export const cpmCsproj = `<!-- .csproj: no versions any more -->
+<PackageReference Include="Newtonsoft.Json" />`;
+
+/** Version strings: a clean build from Server Manager and a dirty local build (Version.props). */
+export const versions = {
+  clean: { tag: '11.5.3', rev: '.220', sha: '+06be7b2c', branch: '.topic-entra-crisp-v2', dirty: '', cfg: '.debug' },
+  dirty: { tag: '11.5.3', rev: '.109', sha: '+c41413bb', branch: '.main', dirty: '.dirty.64631446', cfg: '.debug' },
+};

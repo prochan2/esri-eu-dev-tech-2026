@@ -61,6 +61,7 @@ export function presenter() {
         <div class="p-notes" id="notes"></div>
       </div>
     </main>
+    <div class="p-hover" id="hoverbox"><iframe id="hover" name="hover" src="?view=preview&step=0" tabindex="-1"></iframe><div class="p-hover-t" id="hovertitle"></div></div>
     <footer class="p-map" id="map">
       ${sections
         .map(
@@ -150,6 +151,22 @@ export function presenter() {
   $('b-reset').onclick = () => confirm('Reset the timer?') && resetTimer();
   $('b-black').onclick = () => sync.update({ blackout: !sync.state.blackout });
   $('b-over').onclick = () => sync.update({ overview: !sync.state.overview });
+  // hovering a chip shows a thumbnail of that step (presenter only)
+  const hover = $<HTMLIFrameElement>('hover');
+  const hoverBox = $('hoverbox');
+  $('map').addEventListener('mouseover', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('.p-chip');
+    if (!b) return;
+    const i = Number(b.dataset.step);
+    post(hover, { step: i, instant: true });
+    $('hovertitle').textContent = `${i + 1}. ${steps[i].title}`;
+    const r = b.getBoundingClientRect();
+    const w = hoverBox.offsetWidth;
+    hoverBox.style.left = `${Math.min(window.innerWidth - w - 8, Math.max(8, r.left + r.width / 2 - w / 2))}px`;
+    hoverBox.style.top = `${r.top - hoverBox.offsetHeight - 10}px`;
+    hoverBox.classList.add('on');
+  });
+  $('map').addEventListener('mouseleave', () => hoverBox.classList.remove('on'));
   $('map').addEventListener('click', (e) => {
     const b = (e.target as HTMLElement).closest<HTMLElement>('.p-chip');
     if (b) sync.update({ step: Number(b.dataset.step), overview: false, blackout: false });
