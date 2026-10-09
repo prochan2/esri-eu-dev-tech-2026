@@ -2306,3 +2306,29 @@ code {
   object-fit: contain;
   background: #0d1117;
 }
+
+/* closing call to action */
+.ov-ask {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+  font-size: 28px;
+  color: var(--ink-2);
+}
+.ov-ask .logo {
+  width: 34px;
+  height: 34px;
+}
+.ov-ask b {
+  color: #fff;
+}
+
+.ov-thanks .ov-by {
+  white-space: nowrap;
+  margin-top: 8px;
+}
+.ov-thanks h1 {
+  height: 96px;
+  font-size: 88px;
+}

@@ -17,6 +17,7 @@ const titleBlock = () => `
       <div class="qr" role="img" aria-label="QR code: ${config.qrUrl}">${qrSvg(config.qrUrl)}</div>
       <div>
         <h1><span ${a({ only: ['thanks'], anim: 'fade' })}>Thank you</span><span class="ov-q" ${a({ in: 'questions', anim: 'fade' })}>Questions?</span></h1>
+        <div class="ov-ask">${logos.github}<span>More questions later? <b>Ask in GitHub Discussions</b> — scan the code</span></div>
         <div class="ov-by"><span>${config.speaker}</span><span class="ov-ev">${config.qrLabel}</span></div>
       </div>
     </div>

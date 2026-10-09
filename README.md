@@ -55,3 +55,9 @@ See `private/README.md` for why these are not committed.
 - `src/presenter/` is the presenter view. `src/print.ts` is the PDF view.
 
 A step names a zone `target` for the camera to frame. Elements use `data-in="<step>"`, `data-out` and `data-only` to appear and disappear. A zone with `fixed: '<step>'` turns blue at that step.
+
+## License
+
+Code is under MIT and talk content under CC BY 4.0. Logos, trademarks and excerpts of CETIN source code are not covered. See [LICENSE.md](LICENSE.md).
+
+Questions about the talk: [GitHub Discussions](https://github.com/prochan2/esri-eu-dev-tech-2026/discussions).

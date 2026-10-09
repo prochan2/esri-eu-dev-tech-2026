@@ -1,6 +1,6 @@
 /** Small HTML helpers for authoring the canvas. */
 import QRCode from 'qrcode';
-import { siArcgis, siClaude, siDocker, siDotnet, siGit, siGithubcopilot, siGitlab, siLinux, siNuget, siOpenapiinitiative, siScalar } from 'simple-icons';
+import { siArcgis, siClaude, siGithub, siDocker, siDotnet, siGit, siGithubcopilot, siGitlab, siLinux, siNuget, siOpenapiinitiative, siScalar } from 'simple-icons';
 
 export const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
 
@@ -70,6 +70,7 @@ export const logos = {
   claude: si(siClaude),
   copilot: si(siGithubcopilot, '#e8e8e8'),
   git: si(siGit),
+  github: si(siGithub, '#ffffff'),
   arcgis: si(siArcgis, '#56a5e6'),
   windows: `<svg class="logo" viewBox="0 0 24 24" role="img" aria-label="Windows"><path fill="#4cc2ff" d="M2 4.6l8.2-1.1v7.9H2zM11.2 3.3L22 1.8v9.6H11.2zM2 12.6h8.2v7.9L2 19.4zM11.2 12.6H22v9.6l-10.8-1.5z"/></svg>`,
   chatgpt: `<span class="wordmark gpt">ChatGPT</span>`,

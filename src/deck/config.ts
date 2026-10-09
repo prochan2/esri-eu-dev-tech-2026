@@ -5,9 +5,9 @@ export const config = {
   speaker: 'Antonín Procházka',
   role: 'Senior Software Engineer @ CETIN',
   company: 'CETIN',
-  // TODO(speaker): where the QR code on the closing screen should point
-  qrUrl: 'https://www.cetin.cz/',
-  qrLabel: 'cetin.cz',
+  /** Closing screen: QR code to the repo's GitHub Discussions. */
+  qrUrl: 'https://github.com/prochan2/esri-eu-dev-tech-2026/discussions',
+  qrLabel: 'github.com/prochan2/esri-eu-dev-tech-2026',
   /** Talk length in seconds (Q&A not included). */
   budget: 600,
 };

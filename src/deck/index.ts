@@ -121,8 +121,8 @@ export const deck: DeckDef = {
     {
       section: { id: 'close', title: 'Close' },
       steps: [
-        { id: 'thanks', title: 'Thank you + QR', target: 'overview', secs: 8, notes: ['Thank you!'] },
-        { id: 'questions', title: 'Questions', target: 'overview', secs: 0, notes: ['Click a chip in the jump list to fly back to any topic.'] },
+        { id: 'thanks', title: 'Thank you + QR', target: 'overview', secs: 8, notes: ['Thank you!', 'The QR code opens GitHub Discussions — ask there any time after the talk.'] },
+        { id: 'questions', title: 'Questions', target: 'overview', secs: 0, notes: ['Click a chip in the jump list to fly back to any topic.', 'Out of time? Point to the QR code: GitHub Discussions.'] },
         { id: 'feedback', title: 'Feedback survey', target: 'feedback', secs: 0, notes: ['Leave this up after Q&A.'] },
       ],
     },
